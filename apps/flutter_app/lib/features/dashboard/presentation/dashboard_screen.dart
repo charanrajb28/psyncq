@@ -4,9 +4,10 @@ import '../../../core/theme/app_theme.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen(
-      {required this.onSignOut, this.onConnectAccount, super.key});
+      {required this.onSignOut, this.onProfile, this.onConnectAccount, super.key});
 
   final VoidCallback onSignOut;
+  final VoidCallback onProfile;
   final Future<void> Function()? onConnectAccount;
 
   @override
@@ -108,11 +109,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     style: TextStyle(color: Colors.blueGrey))
               ])),
           const SizedBox(width: 16),
-          const CircleAvatar(
-              backgroundColor: Color(0xFFE3EAFE),
-              child: Text('A',
-                  style: TextStyle(
-                      color: AppTheme.blue, fontWeight: FontWeight.bold)))
+          IconButton(
+              tooltip: 'Profile',
+              onPressed: widget.onProfile,
+              icon: const CircleAvatar(
+                  backgroundColor: Color(0xFFE3EAFE),
+                  child: Text('U',
+                      style: TextStyle(
+                          color: AppTheme.blue, fontWeight: FontWeight.bold))))
         ]),
         const SizedBox(height: 30),
         LayoutBuilder(

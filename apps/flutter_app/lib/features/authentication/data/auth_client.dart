@@ -17,6 +17,18 @@ class AuthClient {
   Future<void> register({required String email, required String password}) =>
       _submit('/api/v1/auth/register', email: email, password: password);
 
+  Future<Map<String, dynamic>> currentUser() async {
+    final response = await _client
+        .get(Uri.parse('$baseUrl/api/v1/auth/me'))
+        .timeout(const Duration(seconds: 15));
+    final body = jsonDecode(response.body) as Map<String, dynamic>;
+    if (response.statusCode != 200) {
+      final error = body['error'] as Map<String, dynamic>?;
+      throw Exception(error?['message'] ?? 'Unable to load your profile.');
+    }
+    return body['data'] as Map<String, dynamic>;
+  }
+
   Future<void> _submit(String path,
       {required String email, required String password}) async {
     late final http.Response response;

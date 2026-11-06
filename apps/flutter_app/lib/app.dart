@@ -7,6 +7,7 @@ import 'features/authentication/presentation/login_screen.dart';
 import 'features/authentication/data/auth_client.dart';
 import 'features/connected_accounts/data/connected_accounts_client.dart';
 import 'features/dashboard/presentation/dashboard_screen.dart';
+import 'features/profile/presentation/profile_screen.dart';
 
 class PSyncQApp extends StatelessWidget {
   const PSyncQApp({required this.dependencies, super.key});
@@ -34,6 +35,24 @@ class PSyncQApp extends StatelessWidget {
           }
         }),
         AppRoutes.dashboard: (context) => DashboardScreen(
+            onProfile: () async {
+              try {
+                final user = await AuthClient(
+                        baseUrl: dependencies.config.apiBaseUrl)
+                    .currentUser();
+                if (context.mounted) {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => ProfileScreen(
+                          user: user,
+                          onBack: () => Navigator.of(context).pop())));
+                }
+              } catch (error) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text(error.toString())));
+                }
+              }
+            },
             onSignOut: () =>
                 Navigator.of(context).pushReplacementNamed(AppRoutes.login),
             onConnectAccount: () async {
