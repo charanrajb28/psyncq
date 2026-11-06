@@ -14,8 +14,10 @@ const readCookie = (request: VercelRequest, name: string): string | undefined =>
 };
 
 const cookie = (token: string, maxAge: number): string => {
-  const secure = process.env.APP_ENV === 'production' ? '; Secure' : '';
-  return `${cookieName}=${token}; Max-Age=${maxAge}; Path=/; HttpOnly; SameSite=Lax${secure}`;
+  const deployed = process.env.APP_ENV === 'production' || process.env.VERCEL === '1';
+  const secure = deployed ? '; Secure' : '';
+  const sameSite = deployed ? 'None' : 'Lax';
+  return `${cookieName}=${token}; Max-Age=${maxAge}; Path=/; HttpOnly; SameSite=${sameSite}${secure}`;
 };
 
 export const createSession = async (userId: string, response: VercelResponse): Promise<void> => {
@@ -45,4 +47,3 @@ export const refreshSession = async (request: VercelRequest, response: VercelRes
   await createSession(session.userId, response);
   return true;
 };
-
