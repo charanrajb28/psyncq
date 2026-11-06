@@ -1,0 +1,16 @@
+.dart_tool/
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+.env
+.env.*
+!.env.example
+backend/.env
+apps/flutter_app/.env
+service.json
+node_modules/
+coverage/
+*.log
+.idea/
+.vscode/

@@ -1,0 +1,21 @@
+{
+  "name": "psyncq-backend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test src/**/*.test.ts",
+    "db:migrate": "node --env-file=../.env --import=tsx scripts/migrate.ts",
+    "build": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/pg": "^8.11.10",
+    "@vercel/node": "^5.3.24",
+    "pg": "^8.13.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.0",
+    "vercel": "^48.10.0"
+  }
+}
