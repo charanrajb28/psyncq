@@ -14,7 +14,7 @@ class AppConfig {
     const rawEnvironment =
         String.fromEnvironment('APP_ENV', defaultValue: 'development');
     const rawApiBaseUrl = String.fromEnvironment('API_BASE_URL',
-        defaultValue: 'http://localhost:3000');
+        defaultValue: 'https://psyncq-backend.vercel.app');
     final environment = switch (rawEnvironment) {
       'staging' => AppEnvironment.staging,
       'production' => AppEnvironment.production,

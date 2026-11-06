@@ -53,3 +53,16 @@ From the repository root, run `powershell -ExecutionPolicy Bypass -File .\script
 - SQLite is a cache and operation database, never the authoritative ledger.
 - The ledger is tamper-evident and recoverable, not advertised as absolutely immutable.
 - Google Drive is the first provider; other providers come later.
+# Backend API
+
+The Flutter app defaults to the deployed backend:
+
+```text
+https://psyncq-backend.vercel.app
+```
+
+For local development, override it with:
+
+```powershell
+flutter run -d chrome --web-port 8080 --dart-define=API_BASE_URL=http://localhost:3000
+```
