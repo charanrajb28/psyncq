@@ -1,4 +1,5 @@
 import { Pool } from 'pg';
+import { logError } from '../http/logger.js';
 
 let pool: Pool | undefined;
 
@@ -22,5 +23,6 @@ export const getPool = (): Pool => {
     // Production should provide the Aiven CA and set rejectUnauthorized=true.
     ssl: requestedSslMode ? { rejectUnauthorized: process.env.DATABASE_SSL_REJECT_UNAUTHORIZED === 'true' } : undefined,
   });
+  pool.on('error', (error) => logError('database.pool_error', { message: error.message }));
   return pool;
 };
