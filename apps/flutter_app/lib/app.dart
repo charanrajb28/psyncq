@@ -34,54 +34,19 @@ class PSyncQApp extends StatelessWidget {
             Navigator.of(context).pushReplacementNamed(AppRoutes.dashboard);
           }
         }),
-        AppRoutes.dashboard: (context) => DashboardScreen(
-            onProfile: () async {
-              try {
-                final user = await AuthClient(
-                        baseUrl: dependencies.config.apiBaseUrl)
-                    .currentUser();
-                if (context.mounted) {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => ProfileScreen(
-                          user: user,
-                          onBack: () => Navigator.of(context).pop())));
-                }
-              } catch (error) {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(content: Text(error.toString())));
-                }
-              }
-            },
-            onSignOut: () async {
-              await AuthClient(baseUrl: dependencies.config.apiBaseUrl)
-                  .signOut();
-              if (context.mounted) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    AppRoutes.login, (route) => false);
-              }
-            },
-            onConnectAccount: () async {
-              try {
-                await ConnectedAccountsClient(
-                        baseUrl: dependencies.config.apiBaseUrl)
-                    .beginGoogleConnection();
-              } catch (error) {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(content: Text(error.toString())));
-                }
-              }
-            }),
+        AppRoutes.dashboard: (context) => _AuthGate(
+            dependencies: dependencies, redirectUnauthenticated: true),
       },
     );
   }
 }
 
 class _AuthGate extends StatefulWidget {
-  const _AuthGate({required this.dependencies});
+  const _AuthGate(
+      {required this.dependencies, this.redirectUnauthenticated = false});
 
   final AppDependencies dependencies;
+  final bool redirectUnauthenticated;
 
   @override
   State<_AuthGate> createState() => _AuthGateState();
@@ -129,6 +94,16 @@ class _AuthGateState extends State<_AuthGate> {
                   }
                 }
               });
+        }
+        if (widget.redirectUnauthenticated) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                  AppRoutes.login, (route) => false);
+            }
+          });
+          return const Scaffold(
+              body: Center(child: CircularProgressIndicator()));
         }
         return LoginScreen(onSignedIn: (email, password, registering) async {
           final auth = AuthClient(baseUrl: widget.dependencies.config.apiBaseUrl);
