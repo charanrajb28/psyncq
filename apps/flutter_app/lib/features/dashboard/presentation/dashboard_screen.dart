@@ -4,7 +4,10 @@ import '../../../core/theme/app_theme.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen(
-      {required this.onSignOut, this.onProfile, this.onConnectAccount, super.key});
+      {required this.onSignOut,
+      required this.onProfile,
+      this.onConnectAccount,
+      super.key});
 
   final VoidCallback onSignOut;
   final VoidCallback onProfile;
