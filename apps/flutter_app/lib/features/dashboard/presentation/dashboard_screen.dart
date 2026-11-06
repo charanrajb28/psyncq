@@ -9,7 +9,7 @@ class DashboardScreen extends StatefulWidget {
       this.onConnectAccount,
       super.key});
 
-  final VoidCallback onSignOut;
+  final Future<void> Function() onSignOut;
   final VoidCallback onProfile;
   final Future<void> Function()? onConnectAccount;
 
@@ -19,6 +19,7 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   int _selected = 0;
+  bool _isSigningOut = false;
   final _items = const [
     'Dashboard',
     'All files',
@@ -77,9 +78,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
         const Spacer(),
         ListTile(
             leading: const Icon(Icons.logout, color: Color(0xFF9BA8C6)),
-            title: const Text('Sign out',
-                style: TextStyle(color: Color(0xFF9BA8C6))),
-            onTap: widget.onSignOut),
+            title: Text(_isSigningOut ? 'Signing out...' : 'Sign out',
+                style: const TextStyle(color: Color(0xFF9BA8C6))),
+            enabled: !_isSigningOut,
+            onTap: () async {
+              setState(() => _isSigningOut = true);
+              try {
+                await widget.onSignOut();
+              } catch (error) {
+                if (mounted) {
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text(error.toString())));
+                }
+              } finally {
+                if (mounted) setState(() => _isSigningOut = false);
+              }
+            }),
       ]));
 
   IconData _iconFor(int index) => [

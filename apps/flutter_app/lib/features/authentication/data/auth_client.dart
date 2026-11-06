@@ -29,6 +29,15 @@ class AuthClient {
     return body['data'] as Map<String, dynamic>;
   }
 
+  Future<void> signOut() async {
+    final response = await _client
+        .post(Uri.parse('$baseUrl/api/v1/auth/logout'))
+        .timeout(const Duration(seconds: 15));
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw Exception('Unable to sign out. Please try again.');
+    }
+  }
+
   Future<void> _submit(String path,
       {required String email, required String password}) async {
     late final http.Response response;

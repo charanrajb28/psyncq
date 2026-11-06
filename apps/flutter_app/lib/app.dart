@@ -53,8 +53,14 @@ class PSyncQApp extends StatelessWidget {
                 }
               }
             },
-            onSignOut: () =>
-                Navigator.of(context).pushReplacementNamed(AppRoutes.login),
+            onSignOut: () async {
+              await AuthClient(baseUrl: dependencies.config.apiBaseUrl)
+                  .signOut();
+              if (context.mounted) {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    AppRoutes.login, (route) => false);
+              }
+            },
             onConnectAccount: () async {
               try {
                 await ConnectedAccountsClient(
@@ -102,8 +108,15 @@ class _AuthGateState extends State<_AuthGate> {
         if (snapshot.hasData) {
           return DashboardScreen(
               onProfile: () => _openProfile(context),
-              onSignOut: () => Navigator.of(context)
-                  .pushReplacementNamed(AppRoutes.login),
+              onSignOut: () async {
+                await AuthClient(
+                        baseUrl: widget.dependencies.config.apiBaseUrl)
+                    .signOut();
+                if (context.mounted) {
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                      AppRoutes.login, (route) => false);
+                }
+              },
               onConnectAccount: () async {
                 try {
                   await ConnectedAccountsClient(
